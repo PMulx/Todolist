@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="src/todo_list.png" type="image/png" />
+    <link
+      href="https://unpkg.com/css.gg@2.0.0/icons/css/display-fullwidth.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Vollkorn:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Lora:wght@600&family=Vollkorn:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo List</title>
+  </head>
+  <style>
+    body {
+      background-color: #fffffe;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-size: 2rem;
+      font-family: "Lora", serif;
+      text-align: center;
+    }
+    .task-list {
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 1rem;
+    }
+    .valid {
+      text-decoration: line-through;
+    }
+  </style>
+  <body>
+    <h1>Todo List</h1>
+    <div class="task-list">
+      <todo-list></todo-list>
+    </div>
+
+    <script attr="defer" src="src/custom-elements.js"></script>
+  </body>
+</html>

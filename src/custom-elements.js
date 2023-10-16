@@ -48,7 +48,7 @@ class TodoList extends HTMLElement {
           align-items: center;
           padding: 0.5rem;
           color: #603fe4;
-          width: 90%;
+          width: 95%;
         }
         .edit-button {
           border: none;
@@ -60,9 +60,9 @@ class TodoList extends HTMLElement {
         }
         .delete-button {
           border: none;
-          background-color: #d3645c;
+          background-color: #c00d00;
           font-family: "Montserrat";
-          color: #fffffe;
+          color: #ffffff;
           font-size: 1rem;
           margin : 0.2rem 0 0.2rem 0.2rem;
         }
@@ -80,10 +80,10 @@ class TodoList extends HTMLElement {
         }
       </style>
       <form class="insert__task" id="task-form">
-        <label>Nom de la tâche</label>
-        <input type="text" id="task-input" />
+        <label for="task-input">Nom de la tâche</label>
+        <input type="text" id="task-input" name="task" placeholder="Saisissez le nom de la tâche ici" />
         <button class="btn__submit" type="submit">Ajouter ma tâche</button>
-      </form>
+      </form> 
       <div class="tasks" id="task-list"></div>
       <button class="btn__remove-completed">Retirer les tâches effectuées</button>
     `;
@@ -119,8 +119,8 @@ class TodoList extends HTMLElement {
     const div = document.createElement("div");
     div.classList.add("task");
     div.innerHTML = `
-      <input type="checkbox" class="checkbox" />
-      <span>${taskText}</span>
+      <input type="checkbox" aria-label="Cochez la case pour valider la réalisation de cette tâche" id="task-checkbox" class="checkbox">
+      <span class="span">${taskText}</span>
       <button class="edit-button">Modifier</button>
       <button class="delete-button">Supprimer</button>
     `;
@@ -139,10 +139,12 @@ class TodoList extends HTMLElement {
         const updatedText = editInput.value;
         this.updateTaskInLocalStorage(div, updatedText);
 
-        span.textContent = updatedText;
-        div.replaceChild(span, editInput);
-
         editButton.textContent = "Modifier";
+        const newSpan = document.createElement("span");
+        newSpan.classList.add("span");
+        newSpan.textContent = updatedText;
+        div.replaceChild(newSpan, editInput);
+        console.log("Blur event triggered");
       });
 
       editInput.focus();
@@ -160,6 +162,17 @@ class TodoList extends HTMLElement {
     this.taskList.appendChild(div);
   }
 
+  removeTaskFromLocalStorage(div) {
+    const tasks = this.getTasksFromLocalStorage();
+    const taskText = div.querySelector(".span").textContent;
+    const index = tasks.indexOf(taskText);
+
+    if (index !== -1) {
+      tasks.splice(index, 1);
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }
+
   saveTaskInLocalStorage(taskText) {
     const tasks = this.getTasksFromLocalStorage();
     tasks.push(taskText);
@@ -168,23 +181,25 @@ class TodoList extends HTMLElement {
 
   updateTaskInLocalStorage(div, updatedText) {
     const tasks = this.getTasksFromLocalStorage();
-    const index = Array.from(div.parentNode.children).indexOf(li);
+    const index = Array.from(div.parentNode.children).indexOf(div);
     tasks[index] = updatedText;
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
   removeCompletedTasks() {
     const completedTasks = this.shadowRoot.querySelectorAll(".completed");
-    completedTasks.forEach((completedTask) => {
-      completedTask.parentNode.remove();
-    });
     const tasks = this.getTasksFromLocalStorage();
-    const updatedTasks = tasks.filter((taskText) => {
-      return !completedTasks.some(
-        (completedTask) => completedTask.textContent === taskText
-      );
+
+    completedTasks.forEach((completedTask) => {
+      const taskText = completedTask.textContent;
+      completedTask.parentNode.remove();
+      const index = tasks.indexOf(taskText);
+      if (index !== -1) {
+        tasks.splice(index, 1);
+      }
     });
-    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
   getTasksFromLocalStorage() {
